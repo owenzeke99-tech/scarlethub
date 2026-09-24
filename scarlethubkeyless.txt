@@ -1,0 +1,247 @@
+-- // Scarlet Hub - Modern Red & Black Theme (Link4m Get Key & 24h Cache)
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+-- File lưu key (24h)
+local saveFileName = "ScarletHub_KeyData.json"
+local isKeyValid = false
+
+-- Kiểm tra file lưu key cũ
+local successRead, fileContent = pcall(function()
+    if readfile and isfile and isfile(saveFileName) then
+        return readfile(saveFileName)
+    end
+end)
+
+if successRead and fileContent then
+    local data = pcall(function() return game:GetService("HttpService"):JSONDecode(fileContent) end)
+    -- Kiểm tra thời gian lưu (24 giờ = 86400 giây)
+    if data and type(data) == "table" and data.Timestamp and (os.time() - data.Timestamp < 86400) then
+        isKeyValid = true
+    end
+end
+
+-- Hàm chạy script chính
+local function runMainScript()
+    local success, err = pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/m322574/scarlet2/refs/heads/main/saesource-obfuscated%20(1).lua%203.txt"))()
+    end)
+    if not success then
+        warn("Error running main script: " .. tostring(err))
+    end
+end
+
+-- Nếu key đã lưu còn hạn thì chạy thẳng script luôn, không hiện UI
+if isKeyValid then
+    runMainScript()
+    return
+end
+
+-- Xóa UI cũ nếu có
+if CoreGui:FindFirstChild("ScarletHubKeySystem") then
+    CoreGui.ScarletHubKeySystem:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ScarletHubKeySystem"
+ScreenGui.Parent = CoreGui
+ScreenGui.IgnoreGuiInset = true
+
+-- Main Frame
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 400, 0, 230)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -115)
+MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+-- Viền sáng nhẹ màu đỏ
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(255, 60, 60)
+UIStroke.Thickness = 1.5
+UIStroke.Transparency = 0.5
+UIStroke.Parent = MainFrame
+
+-- Tiêu đề Scarlet Hub
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundTransparency = 1
+Title.Text = "SCARLET HUB"
+Title.TextColor3 = Color3.fromRGB(255, 80, 80)
+Title.TextSize = 22
+Title.Font = Enum.Font.FredokaOne
+Title.Parent = MainFrame
+
+-- Subtitle
+local SubTitle = Instance.new("TextLabel")
+SubTitle.Size = UDim2.new(1, 0, 0, 20)
+SubTitle.Position = UDim2.new(0, 0, 0, 38)
+SubTitle.BackgroundTransparency = 1
+SubTitle.Text = "AUTHENTICATION SYSTEM"
+SubTitle.TextColor3 = Color3.fromRGB(130, 130, 130)
+SubTitle.TextSize = 10
+SubTitle.Font = Enum.Font.GothamBold
+SubTitle.Parent = MainFrame
+
+-- Khung nhập Key (TextBox Holder)
+local TextBoxHolder = Instance.new("Frame")
+TextBoxHolder.Size = UDim2.new(0.85, 0, 0, 45)
+TextBoxHolder.Position = UDim2.new(0.075, 0, 0.38, 0)
+TextBoxHolder.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+TextBoxHolder.Parent = MainFrame
+
+local HolderCorner = Instance.new("UICorner")
+HolderCorner.CornerRadius = UDim.new(0, 8)
+HolderCorner.Parent = TextBoxHolder
+
+local HolderStroke = Instance.new("UIStroke")
+HolderStroke.Color = Color3.fromRGB(60, 60, 60)
+HolderStroke.Thickness = 1
+HolderStroke.Parent = TextBoxHolder
+
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(0.9, 0, 1, 0)
+TextBox.Position = UDim2.new(0.05, 0, 0, 0)
+TextBox.BackgroundTransparency = 1
+TextBox.PlaceholderText = "Enter your key here..."
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.PlaceholderColor3 = Color3.fromRGB(110, 110, 110)
+TextBox.TextSize = 13
+TextBox.Font = Enum.Font.GothamMedium
+TextBox.Parent = TextBoxHolder
+
+-- Nút Xác Nhận (SUBMIT)
+local SubmitBtn = Instance.new("TextButton")
+SubmitBtn.Size = UDim2.new(0.41, 0, 0, 38)
+SubmitBtn.Position = UDim2.new(0.075, 0, 0.68, 0)
+SubmitBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+SubmitBtn.Text = "SUBMIT"
+SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SubmitBtn.TextSize = 13
+SubmitBtn.Font = Enum.Font.GothamBold
+SubmitBtn.Parent = MainFrame
+
+local BtnCorner1 = Instance.new("UICorner")
+BtnCorner1.CornerRadius = UDim.new(0, 8)
+BtnCorner1.Parent = SubmitBtn
+
+-- Nút Lấy Key (GET KEY)
+local GetKeyBtn = Instance.new("TextButton")
+GetKeyBtn.Size = UDim2.new(0.41, 0, 0, 38)
+GetKeyBtn.Position = UDim2.new(0.515, 0, 0.68, 0)
+GetKeyBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+GetKeyBtn.Text = "GET KEY"
+GetKeyBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+GetKeyBtn.TextSize = 13
+GetKeyBtn.Font = Enum.Font.GothamBold
+GetKeyBtn.Parent = MainFrame
+
+local BtnCorner2 = Instance.new("UICorner")
+BtnCorner2.CornerRadius = UDim.new(0, 8)
+BtnCorner2.Parent = GetKeyBtn
+
+local GetKeyStroke = Instance.new("UIStroke")
+GetKeyStroke.Color = Color3.fromRGB(255, 60, 60)
+GetKeyStroke.Thickness = 1
+GetKeyStroke.Parent = GetKeyBtn
+
+-- Thông báo trạng thái / Lỗi
+local ErrorLabel = Instance.new("TextLabel")
+ErrorLabel.Size = UDim2.new(1, 0, 0, 20)
+ErrorLabel.Position = UDim2.new(0, 0, 0.88, 0)
+ErrorLabel.BackgroundTransparency = 1
+ErrorLabel.Text = ""
+ErrorLabel.TextColor3 = Color3.fromRGB(255, 90, 90)
+ErrorLabel.TextSize = 12
+ErrorLabel.Font = Enum.Font.GothamMedium
+ErrorLabel.Parent = MainFrame
+
+-- Hiệu ứng lắc mượt mà (Smooth Shake Effect)
+local function smoothShake()
+    local originalPos = UDim2.new(0.5, -200, 0.5, -115)
+    local duration = 0.45
+    local elapsed = 0
+    local intensity = 10
+    
+    local connection
+    connection = RunService.RenderStepped:Connect(function(dt)
+        elapsed = elapsed + dt
+        if elapsed < duration then
+            local damping = 1 - (elapsed / duration)
+            local offsetX = math.sin(elapsed * 45) * intensity * damping
+            MainFrame.Position = originalPos + UDim2.new(0, offsetX, 0, 0)
+        else
+            MainFrame.Position = originalPos
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Hiệu ứng rê chuột
+local function applyEffect(btn)
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.2}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
+    end)
+end
+applyEffect(SubmitBtn)
+applyEffect(GetKeyBtn)
+
+-- // Logic Xử Lý Key
+local correctKey = "ScarletHubKeyGdoe - Ndbskowiebslekdnd"
+
+SubmitBtn.MouseButton1Click:Connect(function()
+    if TextBox.Text == correctKey then
+        ErrorLabel.TextColor3 = Color3.fromRGB(100, 255, 150)
+        ErrorLabel.Text = "Key verified! Loading script..."
+        
+        -- Lưu thời gian xác thực key (24 giờ) nếu executor hỗ trợ ghi file
+        pcall(function()
+            if writefile and game:GetService("HttpService") then
+                local data = game:GetService("HttpService"):JSONEncode({Timestamp = os.time()})
+                writefile(saveFileName, data)
+            end
+        end)
+        
+        -- Hiệu ứng ẩn UI
+        TweenService:Create(MainFrame, TweenInfo.new(0.4), {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
+        task.wait(0.4)
+        ScreenGui:Destroy()
+        
+        -- Chạy script chính
+        runMainScript()
+    else
+        ErrorLabel.TextColor3 = Color3.fromRGB(255, 90, 90)
+        ErrorLabel.Text = "Incorrect key! Please try again."
+        smoothShake()
+        
+        task.delay(0.4, function()
+            TextBox.Text = ""
+        end)
+    end
+end)
+
+-- Nút Get Key mở link4m trực tiếp và copy link vào clipboard
+GetKeyBtn.MouseButton1Click:Connect(function()
+    local link = "https://link4m.org/AjaP3Hg"
+    setclipboard(link)
+    pcall(function()
+        if syn and syn.request then
+            syn.request({Url = link, Method = "GET"})
+        elseif request then
+            request({Url = link, Method = "GET"})
+        end
+    end)
+    ErrorLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+    ErrorLabel.Text = "Link copied & request sent!"
+end)
